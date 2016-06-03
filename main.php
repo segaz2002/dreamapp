@@ -35,28 +35,24 @@ foreach($configData as $k => $v){
  */
 
 if($argv[1]){
-    $targetSession = null;
+    $matchedSession = null; //This will dump null if none of the academic year is matched
     foreach($sessionCache as $ac){
         if($ac->isWithin(normalizeDate($argv[1]))){
-            $targetSession = $ac;
+            $matchedSession = $ac;
             break;
         }
     }
-    if($targetSession){
-      var_dump($targetSession);
-    }else{
-      echo "No session could be matched from the date supplied";
-    }
+    var_dump($matchedSession);
 }
 
 /**
- * @param $date e.g dd-mm-yyyy
+ * @param $date e.g yyyy-mm-dd
  * Change date from this format to e.g Semptember 23, 2016
  */
 
 function normalizeDate($date){
     $dateSegment = explode('-',$date);
-    if(checkdate($dateSegment[1],$dateSegment[0],$dateSegment[2])){
+    if(checkdate($dateSegment[1],$dateSegment[2],$dateSegment[0])){
         $months = array(
             1 => "January",
             2 => "Febuary",
@@ -70,7 +66,7 @@ function normalizeDate($date){
             10 => "October",
             11 => "November",
             12 => "December");
-        return $months[(int)$dateSegment[1]]." ".$dateSegment[0].",".$dateSegment[2];
+        return $months[(int)$dateSegment[1]]." ".$dateSegment[2].",".$dateSegment[0];
     }else{
         echo "Incorrect date, enter date in this format dd-mm-yyyy";
         exit;

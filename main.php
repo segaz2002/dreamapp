@@ -13,7 +13,7 @@ $configData = parse_ini_file("data.ini",true);
 foreach($configData as $k => $v){
     $sessionCache[$k] = new AcademicYear($configData[$k]);
 }
-var_dump($sessionCache);
+// var_dump($sessionCache);
 //
 //$ac = array(
 //    '2016/17' => array(
@@ -35,15 +35,24 @@ var_dump($sessionCache);
  */
 
 if($argv[1]){
+    $targetSession = null;
     foreach($sessionCache as $ac){
         if($ac->isWithin(normalizeDate($argv[1]))){
-            echo $ac->session;
-        }else{
-            echo "There is no macth\n";
+            $targetSession = $ac;
+            break;
         }
+    }
+    if($targetSession){
+      var_dump($targetSession);
+    }else{
+      echo "No session could be matched from the date supplied";
     }
 }
 
+/**
+ * @param $date e.g dd-mm-yyyy
+ * Change date from this format to e.g Semptember 23, 2016
+ */
 
 function normalizeDate($date){
     $dateSegment = explode('-',$date);

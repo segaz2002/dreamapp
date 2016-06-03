@@ -38,6 +38,10 @@ class AcademicYear {
         $date = new ExpressiveDate;
     }
 
+    public function getAcademicTerms(){
+      return $this->terms;
+    }
+
     /**
      * Check wether a date fall between the terms of this academic year
      * @param $date
@@ -62,5 +66,19 @@ class AcademicYear {
             }
         }
     }
+
+    private function confirmNonOverlappingTerms(){
+      foreach($this->terms as $term ){
+          $termPeriod = explode(':',$term);
+          $beginDate = new ExpressiveDate($termPeriod[0]);
+          $endDate = new ExpressiveDate($termPeriod[1]);
+          if($queryDate->greaterOrEqualTo($beginDate) && $queryDate->lessOrEqualTo($endDate)){
+              return true;
+              break;
+          }
+      }
+    }
+
+
 
 }

@@ -24,11 +24,15 @@ if(isset($argv[1])){
 * 4.1. Given a date (D), return the academic year object (AY) that this date lies on.
 **/
 function determineAcademicYear($date){
-  global $sessionCache;
   $date = Util::normalizeDate($date);
+  return $this->checkTerm($date);
+}
+
+function checkTerm($queryDate){
+  global $sessionCache;
   $matchedSession = null; //4.1.1
   foreach($sessionCache as $ac){
-      if($ac->isWithin($date)){
+      if($ac->isWithin($queryDate)){
           $matchedSession = $ac;
           break;
       }
@@ -52,5 +56,13 @@ var_dump(getTerms('2015/16'));
 * example input term will be --->  September 1, 2015 - December 8, 2015
 **/
 function describeTerm($term){
+  $termSegments = explode('-',$term);
+  $termStartDate = $termSegments[0];
+  $termEndate = $termSegments[1];
+  $academicYearObj = checkTerm($termStartDate);
+  if(!is_null($academicYearObj)){
 
+  }else {
+    return "Unable to locate term within configuration data";
+  }
 }

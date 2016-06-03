@@ -48,23 +48,17 @@ class AcademicYear {
      * @return bool
      */
     public function isWithin($date){
-        // echo $date."\n";
         $queryDate = new ExpressiveDate($date);
-        // echo "--------------------------------";
-        // echo $queryDate."\n";
-        // echo "--------------------------------";
         foreach($this->terms as $term ){
             $termPeriod = explode(':',$term);
             $beginDate = new ExpressiveDate($termPeriod[0]);
             $endDate = new ExpressiveDate($termPeriod[1]);
-            // echo $beginDate ."\n";
-            // echo $endDate ."\n";
-            // var_dump($queryDate->greaterOrEqualTo($beginDate) && $queryDate->lessOrEqualTo($endDate));
             if($queryDate->greaterOrEqualTo($beginDate) && $queryDate->lessOrEqualTo($endDate)){
                 return true;
                 break;
             }
         }
+        return false;
     }
 
     private function confirmNonOverlappingTerms(){
@@ -77,8 +71,7 @@ class AcademicYear {
               break;
           }
       }
+      return false;
     }
-
-
 
 }

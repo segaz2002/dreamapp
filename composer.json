@@ -1,0 +1,5 @@
+{
+  "require": {
+   "jasonlewis/expressive-date" : "1.0.*"
+  }
+}

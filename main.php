@@ -11,10 +11,13 @@ require 'utility.php';
 $sessionCache = [];
 $configData = parse_ini_file("data.ini",true);
 
+//var_dump($configData);
+
 foreach($configData as $k => $v){
+    $configData[$k]['session'] = $k;
     $sessionCache[$k] = new AcademicYear($configData[$k]);
 }
- //var_dump($sessionCache);
+//var_dump($sessionCache);
 
 if(isset($argv[1])){
   var_dump(determineAcademicYear($argv[1]));
@@ -61,8 +64,15 @@ function describeTerm($term){
   $termEndate = $termSegments[1];
   $academicYearObj = checkTerm($termStartDate);
   if(!is_null($academicYearObj)){
-
+    foreach($academicYearObj->getTerms() as $k => $v){
+        $splitDates = explode(':',$v);
+        if($splitDates[0] == $termStartDate and $splitDates[1] == $termEndate){
+            return $k." ".$academicYearObj->getSession();
+        }
+      }
   }else {
-    return "Unable to locate term within configuration data";
+    return "Unable to locate term within configuration data \n";
   }
 }
+
+echo describeTerm("September 1, 2015 - December 8, 2015");

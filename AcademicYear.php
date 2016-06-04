@@ -16,6 +16,8 @@ class AcademicYear {
         foreach($sessionData as $k => $v){
             if($k == 'start'):
                 $this->startDay = $v;
+            elseif($k == 'session'):
+                $this->session = $v;
             else:
                 $this->terms[$k] = $v;
             endif;

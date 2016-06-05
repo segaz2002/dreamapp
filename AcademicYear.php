@@ -63,17 +63,30 @@ class AcademicYear {
         return false;
     }
 
-    private function confirmNonOverlappingTerms(){
-      foreach($this->terms as $term ){
-          $termPeriod = explode(':',$term);
-          $beginDate = new ExpressiveDate($termPeriod[0]);
-          $endDate = new ExpressiveDate($termPeriod[1]);
-          if($queryDate->greaterOrEqualTo($beginDate) && $queryDate->lessOrEqualTo($endDate)){
-              return true;
-              break;
-          }
-      }
-      return false;
+    public function getStartDay(){
+        return $this->startDay;
     }
+
+    public function termCalendarDays($term){
+        $splittedTerm  = $this->splitTerm($term);
+        return $splittedTerm['startDate']->getDifferenceInDays($splittedTerm['endDate']);
+    }
+
+    private function splitTerm($term){
+        $termSplits = explode(':',$term);
+        return array('startDate' => new ExpressiveDate($termSplits[0]), 'endDate' => new ExpressiveDate($termSplits[1])  );
+    }
+//    private function confirmNonOverlappingTerms(){
+//      foreach($this->terms as $term ){
+//          $termPeriod = explode(':',$term);
+//          $beginDate = new ExpressiveDate($termPeriod[0]);
+//          $endDate = new ExpressiveDate($termPeriod[1]);
+//          if($queryDate->greaterOrEqualTo($beginDate) && $queryDate->lessOrEqualTo($endDate)){
+//              return true;
+//              break;
+//          }
+//      }
+//      return false;
+//    }
 
 }

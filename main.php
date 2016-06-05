@@ -9,18 +9,40 @@ require 'vendor/autoload.php';
 require_once('AcademicYear.php');
 require 'utility.php';
 $sessionCache = [];
-$configData = parse_ini_file("data.ini",true);
 
-//var_dump($configData);
-
-foreach($configData as $k => $v){
-    $configData[$k]['session'] = $k;
-    $sessionCache[$k] = new AcademicYear($configData[$k]);
+if(isset($argv[1]) && isset($argv[2])){
+    $configPath = $argv[1];
+    $configData = parse_ini_file($configPath,true);
+    foreach($configData as $k => $v){
+        $configData[$k]['session'] = $k;
+        $sessionCache[$k] = new AcademicYear($configData[$k]);
+    }
+    $academicSession = determineAcademicYear($argv[2])->getSession();
+    if($academicSession!= null){
+        echo  "Date belongs to academic year " . $academicSession."\n";
+        echo "Academic year contains the following terms: \n";
+        foreach(getTerms($academicSession) as $k => $v){
+            echo "\t".$k." ".$academicSession."(". $sessionCache[$academicSession]->termCalendarDays($v)." days)\n";
+        }
+    }else{
+        echo null;
+        exit;
+    }
+}else{
+    echo "ERROR :: see usage below \n";
+    echo "php main.php data.ini 2016-06-12\n";
+    exit;
 }
-//var_dump($sessionCache);
 
-if(isset($argv[1])){
-  var_dump(determineAcademicYear($argv[1]));
+/**
+ * @TODO
+ */
+function orderAcademicYearsByStartDate(){
+    $temp = [];
+    global $sessionCache;
+    foreach($sessionCache as $ac){
+
+    }
 }
 
 /**
@@ -28,7 +50,7 @@ if(isset($argv[1])){
 **/
 function determineAcademicYear($date){
   $date = Util::normalizeDate($date);
-  return $this->checkTerm($date);
+  return checkTerm($date);
 }
 
 function checkTerm($queryDate){
@@ -36,8 +58,13 @@ function checkTerm($queryDate){
   $matchedSession = null; //4.1.1
   foreach($sessionCache as $ac){
       if($ac->isWithin($queryDate)){
-          $matchedSession = $ac;
-          break;
+          $queryDate = new ExpressiveDate($queryDate);
+          if($queryDate->greaterOrEqualTo(new ExpressiveDate($ac->getStartDay())) ){
+              $matchedSession = $ac;
+              break;
+          }else{ //academic year not in effect....
+              $matchedSession = getAcademicYearByStartDate($queryDate);
+          }
       }
   }
   return $matchedSession;
@@ -52,7 +79,7 @@ function getTerms($academicYear){
   return $ay->getAcademicTerms();
 }
 //e.g
-var_dump(getTerms('2015/16'));
+//var_dump(getTerms('2015/16'));
 
 /**
 * 4.4. Given the academic term (AT), print it's name, e.g "Spring 2015/16"
@@ -75,4 +102,6 @@ function describeTerm($term){
   }
 }
 
-echo describeTerm("September 1, 2015 - December 8, 2015");
+//echo describeTerm("September 1, 2015 - December 8, 2015");
+
+
